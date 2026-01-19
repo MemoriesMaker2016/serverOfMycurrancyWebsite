@@ -23,6 +23,13 @@ const userSchema = new mongoose.Schema(
 
     agreeTerms: { type: Boolean, required: true },
     agreeMarketing: { type: Boolean, default: false },
+
+    /* 🔐 ROLE */
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
+    },
   },
   { timestamps: true },
 );
