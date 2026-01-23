@@ -1,6 +1,7 @@
 const User = require('../models/USer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const ForexOrder = require('../models/UserCurrencyData');
 const { validationResult } = require('express-validator');
 
 exports.register = async (req, res) => {
@@ -106,6 +107,42 @@ exports.login = async (req, res) => {
         lastName: user.lastName,
         email: user.email,
       },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+
+
+exports.createOrder = async (req, res) => {
+  try {
+    const {
+      orderType,
+      product,
+      fromCurrency,
+      toCurrency,
+      inputAmount,
+      convertedAmount,
+      rate,
+    } = req.body;
+
+    const order = await ForexOrder.create({
+      userId: req.userId,
+      orderType,
+      product,
+      fromCurrency,
+      toCurrency,
+      inputAmount,
+      convertedAmount,
+      rate,
+    });
+
+    res.status(201).json({
+      message: 'Order created successfully',
+      order,
     });
   } catch (error) {
     console.error(error);

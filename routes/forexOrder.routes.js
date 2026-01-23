@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const ForexOrder = require('../models/UserCurrencyData.js');
-
 router.post('/create', async (req, res) => {
+  console.log(req.userId);
+
   try {
     const {
-      userId,
       orderType,
       product,
       fromCurrency,
@@ -16,7 +16,7 @@ router.post('/create', async (req, res) => {
     } = req.body;
 
     const order = await ForexOrder.create({
-      userId,
+      userId: req.userId,
       orderType,
       product,
       fromCurrency,
@@ -38,21 +38,5 @@ router.post('/create', async (req, res) => {
     });
   }
 });
-
-router.get('/my-orders/:userId', async (req, res) => {
-  try {
-    const orders = await ForexOrder.find({
-      userId: req.params.userId,
-    }).sort({ createdAt: -1 });
-
-    res.json({ success: true, orders });
-  } catch (err) {
-    res.status(500).json({ success: false });
-  }
-});
-
-const orders = await ForexOrder.find({ userId })
-  .populate('userId', 'firstName lastName email phone')
-  .sort({ createdAt: -1 });
 
 module.exports = router;
